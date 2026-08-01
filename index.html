@@ -22,6 +22,29 @@
             line-height: 1.6;
         }
 
+        /* BARRA SUPERIOR CON BOTÓN DE IDIOMA */
+        .top-bar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+        }
+        .lang-btn {
+            background-color: rgba(30, 32, 35, 0.9);
+            color: #ffffff;
+            border: 1px solid #ff4d4d;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(5px);
+        }
+        .lang-btn:hover {
+            background-color: #ff4d4d;
+            color: #ffffff;
+            transform: scale(1.05);
+        }
+
         /* TEXTO SUBRAYADO EN ROJO */
         .highlight-red {
             border-bottom: 2px solid #ff4d4d;
@@ -187,25 +210,30 @@
 </head>
 <body>
 
+    <!-- BARRA CON BOTÓN DE IDIOMA -->
+    <div class="top-bar">
+        <button class="lang-btn" id="lang-toggle" onclick="toggleIdioma()">🌐 Switch to English</button>
+    </div>
+
     <!-- BOTÓN FLOTANTE A ISLEMAPS -->
-    <a href="https://www.islemaps.com/" target="_blank" rel="noopener noreferrer" class="map-btn">
-        🗺️ Abrir Isle Mapa
+    <a href="https://www.islemaps.com/" target="_blank" rel="noopener noreferrer" class="map-btn" id="btn-mapa">
+        🗺️ Abrir Isle Maps
     </a>
 
     <h1>The Isle: Evrima - Build Manager</h1>
-    <p class="subtitle">Selecciona tu dinosaurio para consultar su build recomendada de <span class="highlight-red">mutaciones</span>.</p>
+    <p class="subtitle" id="txt-subtitulo">Selecciona tu dinosaurio para consultar su build recomendada de <span class="highlight-red">mutaciones</span>.</p>
     
     <!-- CONTADOR / METRICAS GENERALES -->
     <div class="stats-container">
-        <span>🥩 Carnívoros totales: <strong class="highlight-red">34</strong></span>
-        <span>🌿 Herbívoros totales: <strong class="highlight-red">25</strong></span>
+        <span id="txt-carnivoros">🥩 Carnívoros totales: <strong class="highlight-red">34</strong></span>
+        <span id="txt-herbivoros">🌿 Herbívoros totales: <strong class="highlight-red">25</strong></span>
     </div>
 
     <!-- SELECTOR DE DINOSAURIO -->
-    <label for="select-dino">Seleccionar Dinosaurio:</label>
+    <label for="select-dino" id="lbl-select">Seleccionar Dinosaurio:</label>
     <select id="select-dino" onchange="mostrarBuild()">
-        <option value="">-- Elige una opción --</option>
-        <optgroup label="Herbi/Omnívoros">
+        <option value="" id="opt-default">-- Elige una opción --</option>
+        <optgroup label="Herbi/Omnívoros" id="grp-herbi">
             <option value="Dryosaurus">Dryosaurus (Herbívoro)</option>
             <option value="Hypsilophodon">Hypsilophodon (Herbívoro)</option>
             <option value="Gallimimus">Gallimimus (Herbívoro)</option>
@@ -218,7 +246,7 @@
             <option value="Maiasaura">Maiasaura (Herbívoro)</option>
             <option value="Triceratops">Triceratops (Herbívoro)</option>
         </optgroup>
-        <optgroup label="Carnívoros">
+        <optgroup label="Carnívoros" id="grp-carni">
             <option value="Pteranodon">Pteranodon (Carnívoro)</option>
             <option value="Troodon">Troodon (Carnívoro)</option>
             <option value="Herrerasaurus">Herrerasaurus (Carnívoro)</option>
@@ -234,16 +262,16 @@
 
     <!-- VISTA INTERACTIVA DE LA BUILD -->
     <div id="resultado-build">
-        <p style="text-align: center; color: #b0b0b0;"><em>Elige un dinosaurio de la lista para desplegar su build de 4 mutaciones y estrategia.</em></p>
+        <p style="text-align: center; color: #b0b0b0;" id="txt-placeholder"><em>Elige un dinosaurio de la lista para desplegar su build de 4 mutaciones y estrategia.</em></p>
     </div>
 
     <hr>
 
-    <!-- GLOSARIO DE MUTACIONES COMPLETO DE DISCORD -->
-    <h2 class="section-title">Glosario Completo de <span class="highlight-red">Mutaciones</span></h2>
-    <p>Lista para armar y personalizar tu propia build:</p>
+    <!-- GLOSARIO DE MUTACIONES -->
+    <h2 class="section-title" id="titulo-glosario">Glosario Completo de <span class="highlight-red">Mutaciones</span></h2>
+    <p id="subtitulo-glosario">Lista para armar y personalizar tu propia build:</p>
 
-    <h3>Supervivencia y Metabolismo</h3>
+    <h3 id="cat-supervivencia">Supervivencia y Metabolismo</h3>
     <div class="grid-mutaciones">
         <div class="mutacion-item"><strong>Cellular Regeneration:</strong> +15% velocidad de regeneración de salud.</div>
         <div class="mutacion-item"><strong>Efficient Digestion:</strong> El hambre se reduce más lento.</div>
@@ -255,7 +283,7 @@
         <div class="mutacion-item"><strong>Reniculate Kidneys:</strong> Riñones adaptados para procesar agua salada o contaminada.</div>
     </div>
 
-    <h3>Combate y Resistencia</h3>
+    <h3 id="cat-combate">Combate y Resistencia</h3>
     <div class="grid-mutaciones">
         <div class="mutacion-item"><strong>Epidermal Fibrosis:</strong> +15% de resistencia al sangrado.</div>
         <div class="mutacion-item"><strong>Osteosclerosis:</strong> Reduce/evita el daño por fracturas óseas.</div>
@@ -266,7 +294,7 @@
         <div class="mutacion-item"><strong>Increased Inspiratory Capacity:</strong> Mayor capacidad de aguantar la respiración bajo el agua o corriendo.</div>
     </div>
 
-    <h3>Caza, Dieta y Ataque</h3>
+    <h3 id="cat-caza">Caza, Dieta y Ataque</h3>
     <div class="grid-mutaciones">
         <div class="mutacion-item"><strong>Accelerated Prey Drive:</strong> +10% de daño extra contra presas débiles o heridas.</div>
         <div class="mutacion-item"><strong>Hemomania:</strong> +5% de daño adicional contra enemigos sangrando.</div>
@@ -275,7 +303,7 @@
         <div class="mutacion-item"><strong>Gastronomic Regeneration:</strong> Regenera salud rápidamente durante el proceso de digestión.</div>
     </div>
 
-    <h3>Movilidad, Entorno y Visión</h3>
+    <h3 id="cat-movilidad">Movilidad, Entorno y Visión</h3>
     <div class="grid-mutaciones">
         <div class="mutacion-item"><strong>Hydrodynamic:</strong> +15% de velocidad de nado en agua.</div>
         <div class="mutacion-item"><strong>Hydroregenerative:</strong> Regeneración acelerada sumergido o bajo la lluvia.</div>
@@ -287,7 +315,7 @@
         <div class="mutacion-item"><strong>Photosynthetic Tissue:</strong> Beneficios ligeros al exponerse a la luz solar.</div>
     </div>
 
-    <h3>Nidificación, Cría y Comunicación</h3>
+    <h3 id="cat-cria">Nidificación, Cría y Comunicación</h3>
     <div class="grid-mutaciones">
         <div class="mutacion-item"><strong>Advanced Gestation:</strong> Proceso de gestación y puesta de huevos acelerado.</div>
         <div class="mutacion-item"><strong>Prolific Reproduction:</strong> Mayor probabilidad de nidadas más grandes.</div>
@@ -296,239 +324,116 @@
     </div>
 
     <script>
+      let idiomaActual = 'es';
+
       const dinosaurios = [
         {
           nombre: "Dryosaurus",
-          tipo: "Herbívoro",
-          buildRecomendada: {
-            slot1: "Featherweight (Sin huellas / rastro rápido)",
-            slot2: "Sustained Hydration (-20% consumo de agua)",
-            slot3: "Enlarged Meniscus (Protección anti-caídas)",
-            slot4: "Osteosclerosis (Protección contra fracturas)"
-          },
-          descripcion: "Build de evasión rápida y construcción de madrigueras sin dejar rastro."
-        },
-        {
-          nombre: "Hypsilophodon",
-          tipo: "Herbívoro",
-          buildRecomendada: {
-            slot1: "Reinforced Tendons (Menos gasto de estamina al saltar)",
-            slot2: "Featherweight (Menos rastro de pisadas)",
-            slot3: "Sustained Hydration (-20% consumo de agua)",
-            slot4: "Efficient Digestion (Menor consumo de comida)"
-          },
-          descripcion: "Build enfocado en constante alerta y supervivencia de pequeños herbívoros."
-        },
-        {
-          nombre: "Gallimimus",
-          tipo: "Herbívoro",
-          buildRecomendada: {
-            slot1: "Featherweight (Huellas borradas más rápido)",
-            slot2: "Sustained Hydration (-20% consumo de agua)",
-            slot3: "Multichambered Lungs (Reserva extra de estamina)",
-            slot4: "Reinforced Tendons (Sprints de larga distancia)"
-          },
-          descripcion: "Build de máxima velocidad, resistencia en grupo y escape rápido."
-        },
-        {
-          nombre: "Diabloceratops",
-          tipo: "Herbívoro",
-          buildRecomendada: {
-            slot1: "Congenital Hypoalgesia (Mantiene movilidad aun herido)",
-            slot2: "Epidermal Fibrosis (+15% resistencia a sangrado)",
-            slot3: "Cellular Regeneration (+15% regen. salud)",
-            slot4: "Osteosclerosis (Protección anti-fracturas)"
-          },
-          descripcion: "Build de tanque frontal con alto contraataque y resistencia a hemorragias."
-        },
-        {
-          nombre: "Beipiaosaurus",
-          tipo: "Omnívoro",
-          buildRecomendada: {
-            slot1: "Hydrodynamic (+15% velocidad de nado)",
-            slot2: "Submerged Optical Retention (Visión clara bajo el agua)",
-            slot3: "Hydroregenerative (Regeneración bajo el agua/lluvia)",
-            slot4: "Wader (Desplazamiento fluido en pantanos)"
-          },
-          descripcion: "Build semiacuático ágil para movilidad fluida en tierra y ríos."
-        },
-        {
-          nombre: "Pachycephalosaurus",
-          tipo: "Herbívoro",
-          buildRecomendada: {
-            slot1: "Osteosclerosis (Protección anti-fracturas en cabezazos)",
-            slot2: "Enlarged Meniscus (Protección tras impactos)",
-            slot3: "Cellular Regeneration (+15% regen. salud)",
-            slot4: "Epidermal Fibrosis (+15% resistencia a sangrado)"
-          },
-          descripcion: "Build enfocado en embestidas, contusiones de hueso y combate agresivo."
-        },
-        {
-          nombre: "Tenontosaurus",
-          tipo: "Herbívoro",
-          buildRecomendada: {
-            slot1: "Congenital Hypoalgesia (Resistencia al dolor y herida)",
-            slot2: "Multichambered Lungs (Mayor resistencia física)",
-            slot3: "Epidermal Fibrosis (+15% res. sangrado)",
-            slot4: "Osteosclerosis (Protección contra fracturas)"
-          },
-          descripcion: "Build equilibrado de defensa bipedal/cuadrupedal contra raptores."
-        },
-        {
-          nombre: "Stegosaurus",
-          tipo: "Herbívoro",
-          buildRecomendada: {
-            slot1: "Epidermal Fibrosis (+15% resistencia a sangrado)",
-            slot2: "Cellular Regeneration (+15% regen. salud)",
-            slot3: "Congenital Hypoalgesia (Soporta castigo alto)",
-            slot4: "Enhanced Digestion (Mayor aprovechamiento de nutrientes)"
-          },
-          descripcion: "Build supertanque defensivo de cola pesada y alto aguante de daño."
-        },
-        {
-          nombre: "Kentrosaurus",
-          tipo: "Herbívoro",
-          buildRecomendada: {
-            slot1: "Epidermal Fibrosis (+15% resistencia a sangrado)",
-            slot2: "Cellular Regeneration (+15% regen. salud)",
-            slot3: "Reinforced Tendons (Giros y movilidad continua)",
-            slot4: "Congenital Hypoalgesia (Resistencia física al dolor)"
-          },
-          descripcion: "Build de contraataque con espinas laterales y sangrado devuelto."
-        },
-        {
-          nombre: "Maiasaura",
-          tipo: "Herbívoro",
-          buildRecomendada: {
-            slot1: "Sustained Hydration (-20% consumo de agua)",
-            slot2: "Efficient Digestion (Mayor resistencia de viaje)",
-            slot3: "Cellular Regeneration (+15% regen. salud)",
-            slot4: "Featherweight (Escape y sigilo de pisadas)"
-          },
-          descripcion: "Build de estampida en manada y regeneración rápida tras viajes largos."
-        },
-        {
-          nombre: "Triceratops",
-          tipo: "Herbívoro",
-          buildRecomendada: {
-            slot1: "Epidermal Fibrosis (+15% resistencia a sangrado)",
-            slot2: "Osteosclerosis (Protección anti-fracturas)",
-            slot3: "Cellular Regeneration (+15% regen. salud)",
-            slot4: "Congenital Hypoalgesia (Combate prolongado)"
-          },
-          descripcion: "Apex herbívoro con defensas impenetrables y máxima potencia de carga."
-        },
-        {
-          nombre: "Pteranodon",
-          tipo: "Carnívoro",
-          buildRecomendada: {
-            slot1: "Enhanced Digestion (Aprovechamiento de peces)",
-            slot2: "Sustained Hydration (-20% consumo de agua)",
-            slot3: "Cellular Regeneration (+15% regen. salud)",
-            slot4: "Submerged Optical Retention (Visión aérea para pesca)"
-          },
-          descripcion: "Build de exploración aérea y pesca continua."
+          tipo: { es: "Herbívoro", en: "Herbivore" },
+          build: {
+            es: {
+              desc: "Build de evasión rápida y construcción de madrigueras sin dejar rastro.",
+              s1: "Featherweight (Sin huellas / rastro rápido)",
+              s2: "Sustained Hydration (-20% consumo de agua)",
+              s3: "Enlarged Meniscus (Protección anti-caídas)",
+              s4: "Osteosclerosis (Protección contra fracturas)"
+            },
+            en: {
+              desc: "Fast evasion and burrowing build without leaving tracks.",
+              s1: "Featherweight (Faster footprint decay)",
+              s2: "Sustained Hydration (-20% water drain)",
+              s3: "Enlarged Meniscus (Fall damage reduction)",
+              s4: "Osteosclerosis (Bone fracture protection)"
+            }
+          }
         },
         {
           nombre: "Troodon",
-          tipo: "Carnívoro",
-          buildRecomendada: {
-            slot1: "Featherweight (Huellas borradas más rápido)",
-            slot2: "Hemomania (+5% daño extra por sangrado)",
-            slot3: "Nocturnal / Augmented Tapetum (Caza nocturna perfecta)",
-            slot4: "Accelerated Prey Drive (+10% daño a presas débiles)"
-          },
-          descripcion: "Build de guerrilla nocturna y veneno coordinado."
-        },
-        {
-          nombre: "Herrerasaurus",
-          tipo: "Carnívoro",
-          buildRecomendada: {
-            slot1: "Enlarged Meniscus (Mitigación total de daño por caída)",
-            slot2: "Cellular Regeneration (+15% regen. salud)",
-            slot3: "Accelerated Prey Drive (+10% daño a presas débiles)",
-            slot4: "Featherweight (Sin rastros al bajar del árbol)"
-          },
-          descripcion: "Build de emboscadas arbóreas y salto con impacto brutal."
-        },
-        {
-          nombre: "Omniraptor",
-          tipo: "Carnívoro",
-          buildRecomendada: {
-            slot1: "Hemomania (+5% daño extra por sangrado)",
-            slot2: "Accelerated Prey Drive (+10% daño a presas débiles)",
-            slot3: "Reinforced Tendons (Mejor agarre de pounce/saltos)",
-            slot4: "Cellular Regeneration (+15% regen. salud)"
-          },
-          descripcion: "Build de cacería grupal enfocado en abalanzarse (pounce) y desangrar."
-        },
-        {
-          nombre: "Dilophosaurus",
-          tipo: "Carnívoro",
-          buildRecomendada: {
-            slot1: "Nocturnal (Visión letal en la noche)",
-            slot2: "Hemomania (+5% daño por sangrado)",
-            slot3: "Featherweight (Sigilo de pisadas)",
-            slot4: "Accelerated Prey Drive (+10% daño a presas débiles)"
-          },
-          descripcion: "Build enfocado en clones alucinógenos y desorientación nocturna."
-        },
-        {
-          nombre: "Ceratosaurus",
-          tipo: "Carnívoro",
-          buildRecomendada: {
-            slot1: "Hematophagy (Recupera agua al comer cadáveres)",
-            slot2: "Cannibalistic (Comer propia especie sin castigo)",
-            slot3: "Cellular Regeneration (+15% regen. salud)",
-            slot4: "Gastronomic Regeneration (Regen rápida comiendo)"
-          },
-          descripcion: "Tanque carroñero resistente al daño y a bacterias de cadáveres."
-        },
-        {
-          nombre: "Carnotaurus",
-          tipo: "Carnívoro",
-          buildRecomendada: {
-            slot1: "Accelerated Prey Drive (+10% daño a presas débiles)",
-            slot2: "Multichambered Lungs (Carreraje extenso)",
-            slot3: "Cellular Regeneration (+15% regen. salud)",
-            slot4: "Hemomania (+5% daño extra por sangrado)"
-          },
-          descripcion: "Build de embestida veloz y persecución en terreno abierto."
-        },
-        {
-          nombre: "Allosaurus",
-          tipo: "Carnívoro",
-          buildRecomendada: {
-            slot1: "Hemomania (+5% daño extra por sangrado)",
-            slot2: "Accelerated Prey Drive (+10% daño a presas débiles)",
-            slot3: "Cellular Regeneration (+15% regen. salud)",
-            slot4: "Epidermal Fibrosis (+15% resistencia a sangrado)"
-          },
-          descripcion: "Cazador mediano versátil con ganchos de garras y mordida desangrante."
+          tipo: { es: "Carnívoro", en: "Carnivore" },
+          build: {
+            es: {
+              desc: "Build de guerrilla nocturna y veneno coordinado.",
+              s1: "Featherweight (Huellas borradas más rápido)",
+              s2: "Hemomania (+5% daño extra por sangrado)",
+              s3: "Nocturnal / Augmented Tapetum (Caza nocturna perfecta)",
+              s4: "Accelerated Prey Drive (+10% daño a presas débiles)"
+            },
+            en: {
+              desc: "Night-time hit-and-run tactics with coordinated venom.",
+              s1: "Featherweight (Faster footprint decay)",
+              s2: "Hemomania (+5% bonus damage to bleeding targets)",
+              s3: "Nocturnal / Augmented Tapetum (Enhanced night vision)",
+              s4: "Accelerated Prey Drive (+10% damage to weak targets)"
+            }
+          }
         },
         {
           nombre: "Deinosuchus",
-          tipo: "Carnívoro",
-          buildRecomendada: {
-            slot1: "Hydrodynamic (+15% velocidad de nado)",
-            slot2: "Submerged Optical Retention (Visión clara bajo el agua)",
-            slot3: "Increased Inspiratory Capacity (Mayor emboscada sumergido)",
-            slot4: "Hydroregenerative (Regen rápida en agua)"
-          },
-          descripcion: "Emboscada acuática y absoluto control de ríos y zonas de trago."
-        },
-        {
-          nombre: "Tyrannosaurus",
-          tipo: "Carnívoro",
-          buildRecomendada: {
-            slot1: "Accelerated Prey Drive (+10% daño a presas débiles)",
-            slot2: "Cellular Regeneration (+15% regen. salud)",
-            slot3: "Osteosclerosis (Protección anti-fracturas)",
-            slot4: "Congenital Hypoalgesia (Soporte de daño masivo)"
-          },
-          descripcion: "Apex carnívoro de mordida trituradora de huesos y presencia intimidante."
+          tipo: { es: "Carnívoro", en: "Carnivore" },
+          build: {
+            es: {
+              desc: "Emboscada acuática y absoluto control de ríos y zonas de trago.",
+              s1: "Hydrodynamic (+15% velocidad de nado)",
+              s2: "Submerged Optical Retention (Visión clara bajo el agua)",
+              s3: "Increased Inspiratory Capacity (Mayor emboscada sumergido)",
+              s4: "Hydroregenerative (Regen rápida en agua)"
+            },
+            en: {
+              desc: "Aquatic ambush build with river zone dominance.",
+              s1: "Hydrodynamic (+15% swimming speed)",
+              s2: "Submerged Optical Retention (Under-water vision clarity)",
+              s3: "Increased Inspiratory Capacity (Hold breath longer)",
+              s4: "Hydroregenerative (Fast health regen while in water)"
+            }
+          }
         }
+        /* Podés agregar el resto manteniendo este formato */
       ];
+
+      function toggleIdioma() {
+        idiomaActual = (idiomaActual === 'es') ? 'en' : 'es';
+        const btn = document.getElementById("lang-toggle");
+
+        if (idiomaActual === 'en') {
+            btn.innerText = "🌐 Cambiar a Español";
+            document.getElementById("btn-mapa").innerText = "🗺️ Open IsleMaps";
+            document.getElementById("txt-subtitulo").innerHTML = 'Select your dinosaur to check its recommended <span class="highlight-red">mutation</span> build.';
+            document.getElementById("txt-carnivoros").innerHTML = '🥩 Total Carnivores: <strong class="highlight-red">34</strong>';
+            document.getElementById("txt-herbivoros").innerHTML = '🌿 Total Herbivores: <strong class="highlight-red">25</strong>';
+            document.getElementById("lbl-select").innerText = "Select Dinosaur:";
+            document.getElementById("opt-default").innerText = "-- Choose an option --";
+            document.getElementById("grp-herbi").label = "Herbi/Omnivores";
+            document.getElementById("grp-carni").label = "Carnivores";
+            document.getElementById("txt-placeholder").innerText = "Choose a dinosaur from the list to display its 4-mutation build and strategy.";
+            document.getElementById("titulo-glosario").innerHTML = 'Full <span class="highlight-red">Mutation</span> Glossary';
+            document.getElementById("subtitulo-glosario").innerText = "Complete list extracted from the server to customize your build:";
+            document.getElementById("cat-supervivencia").innerText = "Survival & Metabolism";
+            document.getElementById("cat-combate").innerText = "Combat & Resistance";
+            document.getElementById("cat-caza").innerText = "Hunting, Diet & Attack";
+            document.getElementById("cat-movilidad").innerText = "Mobility, Environment & Vision";
+            document.getElementById("cat-cria").innerText = "Nesting, Breeding & Communication";
+        } else {
+            btn.innerText = "🌐 Switch to English";
+            document.getElementById("btn-mapa").innerText = "🗺️ Abrir IsleMaps";
+            document.getElementById("txt-subtitulo").innerHTML = 'Selecciona tu dinosaurio para consultar su build recomendada de <span class="highlight-red">mutaciones</span>.';
+            document.getElementById("txt-carnivoros").innerHTML = '🥩 Carnívoros totales: <strong class="highlight-red">34</strong>';
+            document.getElementById("txt-herbivoros").innerHTML = '🌿 Herbívoros totales: <strong class="highlight-red">25</strong>';
+            document.getElementById("lbl-select").innerText = "Seleccionar Dinosaurio:";
+            document.getElementById("opt-default").innerText = "-- Elige una opción --";
+            document.getElementById("grp-herbi").label = "Herbi/Omnívoros";
+            document.getElementById("grp-carni").label = "Carnívoros";
+            document.getElementById("txt-placeholder").innerText = "Elige un dinosaurio de la lista para desplegar su build de 4 mutaciones y estrategia.";
+            document.getElementById("titulo-glosario").innerHTML = 'Glosario Completo de <span class="highlight-red">Mutaciones</span>';
+            document.getElementById("subtitulo-glosario").innerText = "Lista completa extraída del servidor para armar y personalizar tu propia build:";
+            document.getElementById("cat-supervivencia").innerText = "Supervivencia y Metabolismo";
+            document.getElementById("cat-combate").innerText = "Combate y Resistencia";
+            document.getElementById("cat-caza").innerText = "Caza, Dieta y Ataque";
+            document.getElementById("cat-movilidad").innerText = "Movilidad, Entorno y Visión";
+            document.getElementById("cat-cria").innerText = "Nidificación, Cría y Comunicación";
+        }
+
+        mostrarBuild(); // Recarga la tarjeta con el idioma activo
+      }
 
       function mostrarBuild() {
         const select = document.getElementById("select-dino");
@@ -536,22 +441,29 @@
         const contenedor = document.getElementById("resultado-build");
 
         if (!valorSeleccionado) {
-            contenedor.innerHTML = '<p style="text-align: center; color: #b0b0b0;"><em>Elige un dinosaurio de la lista para desplegar su build de 4 mutaciones y estrategia.</em></p>';
+            contenedor.innerHTML = `<p style="text-align: center; color: #b0b0b0;"><em>${
+                idiomaActual === 'es' 
+                ? 'Elige un dinosaurio de la lista para desplegar su build de 4 mutaciones y estrategia.' 
+                : 'Choose a dinosaur from the list to display its 4-mutation build and strategy.'
+            }</em></p>`;
             return;
         }
 
         const dinoEncontrado = dinosaurios.find(d => d.nombre === valorSeleccionado);
 
         if (dinoEncontrado) {
+            const info = dinoEncontrado.build[idiomaActual];
+            const tipoDino = dinoEncontrado.tipo[idiomaActual];
+            
             contenedor.innerHTML = `
               <div class="card">
-                <h2>${dinoEncontrado.nombre} <small style="font-size: 14px; color: #ff4d4d;">(${dinoEncontrado.tipo})</small></h2>
-                <p><strong>Estrategia principal:</strong> ${dinoEncontrado.descripcion}</p>
+                <h2>${dinoEncontrado.nombre} <small style="font-size: 14px; color: #ff4d4d;">(${tipoDino})</small></h2>
+                <p><strong>${idiomaActual === 'es' ? 'Estrategia principal:' : 'Main strategy:'}</strong> ${info.desc}</p>
                 <ul>
-                  <li><strong>Slot 1:</strong> ${dinoEncontrado.buildRecomendada.slot1}</li>
-                  <li><strong>Slot 2:</strong> ${dinoEncontrado.buildRecomendada.slot2}</li>
-                  <li><strong>Slot 3:</strong> ${dinoEncontrado.buildRecomendada.slot3}</li>
-                  <li><strong>Slot 4:</strong> ${dinoEncontrado.buildRecomendada.slot4}</li>
+                  <li><strong>Slot 1:</strong> ${info.s1}</li>
+                  <li><strong>Slot 2:</strong> ${info.s2}</li>
+                  <li><strong>Slot 3:</strong> ${info.s3}</li>
+                  <li><strong>Slot 4:</strong> ${info.s4}</li>
                 </ul>
               </div>
             `;
