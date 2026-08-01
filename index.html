@@ -25,7 +25,7 @@
             max-width: 950px; 
             margin: 0 auto; 
             line-height: 1.5;
-            font-size: 14px; /* Reducido */
+            font-size: 14px;
         }
 
         .top-bar {
@@ -58,7 +58,7 @@
             font-weight: bold;
         }
 
-        /* TÍTULO PRINCIPAL (Reducido de 2.2rem a 1.8rem) */
+        /* TÍTULO PRINCIPAL */
         h1 {
             font-family: 'Chango', cursive;
             font-size: 1.8rem;
@@ -70,7 +70,7 @@
             text-shadow: 0 3px 10px rgba(0,0,0,0.95), 0 0 15px rgba(0,0,0,0.9);
         }
 
-        /* SUBTÍTULOS (Reducidos) */
+        /* SUBTÍTULOS */
         p.subtitle, p#subtitulo-glosario {
             font-family: 'Short Stack', cursive;
             color: #ffffff;
@@ -127,10 +127,11 @@
         li { margin-bottom: 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 5px; color: #e0e0e0; font-size: 0.9rem; text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
         li:last-child { border-bottom: none; margin-bottom: 0; }
         li strong { color: #ff4d4d; }
+        li .mut-desc { color: #b0b0b0; font-size: 0.85rem; font-style: italic; }
 
         hr { border: 0; height: 1px; background: rgba(255, 255, 255, 0.2); margin: 30px 0; }
 
-        /* SECCIONES Y CATEGORÍAS (TÍTULOS SIN RECUADRO) */
+        /* SECCIONES Y CATEGORÍAS */
         h2.section-title { 
             font-family: 'Short Stack', cursive; 
             color: #ffffff; 
@@ -243,7 +244,6 @@
     <h2 class="section-title" id="titulo-glosario">Glosario Completo de <span class="highlight-red">Mutaciones</span></h2>
     <p id="subtitulo-glosario">Lista completa para armar y personalizar tu propia build:</p>
 
-    <!-- EL GLOSARIO SE RENDERIZA DINÁMICAMENTE SEGÚN EL IDIOMA -->
     <div id="contenedor-glosario"></div>
 
     <script>
@@ -351,9 +351,8 @@
         }
       };
 
-      // --- BASE DE DATOS COMPLETA DE BUILDS DE DINOSAURIOS ---
+      // BASE DE DATOS DE DINOSAURIOS
       const dinosaurios = [
-        // HERBÍVOROS & OMNÍVOROS
         {
           nombre: "Dryosaurus",
           tipo: { es: "Herbívoro", en: "Herbivore" },
@@ -442,8 +441,6 @@
             en: { desc: "Apex herbivore: Maximum frontal damage and pain tolerance.", s1: "Epidermal Fibrosis", s2: "Hypermetabolic Inanition", s3: "Congenital Hypoalgesia", s4: "Osteosclerosis" }
           }
         },
-
-        // CARNÍVOROS
         {
           nombre: "Pteranodon",
           tipo: { es: "Carnívoro", en: "Carnivore" },
@@ -526,6 +523,16 @@
         }
       ];
 
+      // FUNCIÓN AUXILIAR PARA OBTENER LA DESCRIPCIÓN DE UNA MUTACIÓN POR NOMBRE
+      function obtenerDescMutacion(nombreMutacion) {
+        const data = glosarioData[idiomaActual];
+        for (let i = 1; i <= 5; i++) {
+          const encontrada = data['m' + i].find(m => m.nombre.toLowerCase() === nombreMutacion.toLowerCase());
+          if (encontrada) return encontrada.desc;
+        }
+        return '';
+      }
+
       function renderGlosario() {
         const data = glosarioData[idiomaActual];
         const container = document.getElementById("contenedor-glosario");
@@ -598,10 +605,10 @@
                 <h2>${dinoEncontrado.nombre} <small style="font-size: 13px; color: #ff4d4d;">(${tipoDino})</small></h2>
                 <p><strong>${idiomaActual === 'es' ? 'Estrategia principal:' : 'Main strategy:'}</strong> ${info.desc}</p>
                 <ul>
-                  <li><strong>Slot 1:</strong> ${info.s1}</li>
-                  <li><strong>Slot 2:</strong> ${info.s2}</li>
-                  <li><strong>Slot 3:</strong> ${info.s3}</li>
-                  <li><strong>Slot 4:</strong> ${info.s4}</li>
+                  <li><strong>Slot 1:</strong> ${info.s1} <span class="mut-desc">— ${obtenerDescMutacion(info.s1)}</span></li>
+                  <li><strong>Slot 2:</strong> ${info.s2} <span class="mut-desc">— ${obtenerDescMutacion(info.s2)}</span></li>
+                  <li><strong>Slot 3:</strong> ${info.s3} <span class="mut-desc">— ${obtenerDescMutacion(info.s3)}</span></li>
+                  <li><strong>Slot 4:</strong> ${info.s4} <span class="mut-desc">— ${obtenerDescMutacion(info.s4)}</span></li>
                 </ul>
               </div>
             `;
