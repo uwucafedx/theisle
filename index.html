@@ -2,11 +2,19 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Isle Builds</title>
+    <style>
+        body { font-family: sans-serif; background: #121212; color: #fff; padding: 20px; }
+        .card { background: #1e1e1e; border-radius: 8px; padding: 15px; margin-bottom: 15px; border: 1px solid #333; }
+        h2 { color: #4caf50; margin-top: 0; }
+        ul { background: #2a2a2a; padding: 15px 30px; border-radius: 5px; }
+    </style>
 </head>
 <body>
 
-    <h1>Builds de The Isle</h1>
+    <h1>Builds Recomendadas - The Isle</h1>
+    <div id="contenedor-builds"></div>
 
     <script>
       const dinosaurios = [
@@ -34,7 +42,22 @@
         }
       ];
 
-      console.log(dinosaurios);
+      // Código para mostrar los dinos en la pantalla
+      const contenedor = document.getElementById("contenedor-builds");
+
+      dinosaurios.forEach(dino => {
+        contenedor.innerHTML += `
+          <div class="card">
+            <h2>${dino.nombre} (${dino.tipo})</h2>
+            <p>${dino.descripcion}</p>
+            <ul>
+              <li><strong>Slot 1:</strong> ${dino.buildRecomendada.slot1}</li>
+              <li><strong>Slot 2:</strong> ${dino.buildRecomendada.slot2}</li>
+              <li><strong>Slot 3:</strong> ${dino.buildRecomendada.slot3}</li>
+            </ul>
+          </div>
+        `;
+      });
     </script>
 
 </body>
